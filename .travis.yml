@@ -1,7 +1,230 @@
 sudo: false
-install: git clone --depth 1 https://github.com/sstephenson/bats.git
-script: make test
 language: c
+
+addons:
+  apt:
+    packages:
+      - python-virtualenv
+
 env:
-  - PYENV_NATIVE_EXT=
-  - PYENV_NATIVE_EXT=1
+  global:
+    - VIRTUAL_ENV_BASE=~/virtualenv
+
+matrix:
+  include:
+    # Plain bats
+    - env: PYENV_NATIVE_EXT=
+      addons: false
+    - env: PYENV_NATIVE_EXT=1
+      addons: false
+
+    # PyPy
+    - env: TESTENV=pypy-2.4.0 DIST=precise
+      dist: precise
+
+    - env: TESTENV=pypy-5.1.1 DIST=precise
+      dist: precise
+
+    - env: TESTENV=pypy-5.1.1 DIST=trusty
+      dist: trusty
+
+    # Miniconda
+
+    - env: TESTENV=miniconda3-4.0.5 DIST=precise LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
+      language: python
+      python: 3.5
+      dist: precise
+    - env: TESTENV=miniconda3-4.0.5 DIST=trusty LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
+      language: python
+      python: 3.5
+      dist: trusty
+
+    # Stackless
+
+    - env: TESTENV=stackless-3.4.1 DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=stackless-dev DIST=precise
+      dist: precise
+      language: generic
+
+    # Jython
+    - env: TESTENV=jython-2.7.0 DIST=precise
+      dist: precise
+      language: generic
+    - env: TESTENV=jython-dev DIST=precise
+      dist: precise
+      language: generic
+
+    - env: TESTENV=jython-2.7.0 DIST=trusty
+      dist: trusty
+      language: generic
+
+# Failures (must all be replicated into the allow_failures section)
+
+    # PyPy
+
+    - env: TESTENV=pypy-dev DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=pypy-dev DIST=trusty
+      dist: trusty
+      language: python
+
+    # Jython
+
+    - env: TESTENV=jython-dev DIST=trusty
+      dist: trusty
+      language: generic
+
+    - env: TESTENV=jython-2.7.0 DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=jython-dev DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=jython-2.7.0 DIST=trusty
+      dist: trusty
+      language: python
+    - env: TESTENV=jython-dev DIST=trusty
+      dist: trusty
+      language: python
+
+    # Miniconda 2
+
+    - env: TESTENV=miniconda2-4.0.5 DIST=precise
+      python: 2.7.9
+      dist: precise
+    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
+      python: 2.7.9
+      dist: trusty
+
+    # Stackless
+
+    - env: TESTENV=stackless-dev DIST=precise
+      dist: precise
+      language: python
+
+    # IronPython
+
+    - env: TESTENV=ironpython-2.7.5 DIST=precise
+      dist: precise
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+    - env: TESTENV=ironpython-dev DIST=precise
+      dist: precise
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+    - env: TESTENV=ironpython-dev DIST=trusty
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+
+  allow_failures:
+    - env: TESTENV=pypy-dev DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=pypy-dev DIST=trusty
+      dist: trusty
+      language: python
+
+    - env: TESTENV=jython-dev DIST=trusty
+      dist: trusty
+      language: generic
+
+    - env: TESTENV=jython-2.7.0 DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=jython-dev DIST=precise
+      dist: precise
+      language: python
+    - env: TESTENV=jython-2.7.0 DIST=trusty
+      dist: trusty
+      language: python
+    - env: TESTENV=jython-dev DIST=trusty
+      dist: trusty
+      language: python
+
+    - env: TESTENV=miniconda2-4.0.5 DIST=precise
+      python: 2.7.9
+      dist: precise
+    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
+      python: 2.7.9
+      dist: trusty
+
+    - env: TESTENV=stackless-dev DIST=precise
+      dist: precise
+
+    - env: TESTENV=ironpython-2.7.5 DIST=precise
+      dist: precise
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+    - env: TESTENV=ironpython-dev DIST=precise
+      dist: precise
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+    - env: TESTENV=ironpython-dev DIST=trusty
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - python-virtualenv
+            - mono-xbuild
+            - mono-dmcs
+            - mono-complete
+
+install:
+  - git clone --depth 1 https://github.com/sstephenson/bats.git
+  - |
+    if [[ "${TESTENV%-*}" == 'ironpython' ]]; then
+      echo "binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc none" | sudo tee -a /etc/fstab
+      echo ':CLR:M::MZ::/usr/bin/mono:' | sudo tee /proc/sys/fs/binfmt_misc/register
+    fi
+
+script:
+  - make test
+  - |
+    export PYENV_ROOT=.
+    if [[ "$TESTENV" != '' ]]; then
+      ./bin/pyenv install "$TESTENV"
+      if [[ -x ./versions/$TESTENV/bin/python ]]; then
+        virtualenv --python=./versions/$TESTENV/bin/python "$VIRTUAL_ENV_BASE/$TESTENV"
+      fi
+      if [[ -f "$VIRTUAL_ENV_BASE/$TESTENV/bin/activate" ]]; then
+        source "$VIRTUAL_ENV_BASE/$TESTENV/bin/activate"
+        python --version
+      else
+        false
+      fi
+    fi

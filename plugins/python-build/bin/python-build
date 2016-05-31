@@ -128,8 +128,8 @@ build_failed() {
       if file_is_not_empty "$LOG_PATH"; then
         colorize 33 "Results logged to ${LOG_PATH}"
         printf "\n\n"
-        echo "Last 10 log lines:"
-        tail -n 10 "$LOG_PATH"
+        echo "Last 50 log lines:"
+        tail -n 50 "$LOG_PATH"
       fi
     fi
   } >&3
