@@ -14,7 +14,7 @@ matrix:
   include:
     # Stackless
 
-    - env: TESTENV=2.7.11,pypy-dev DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=pypy-5.1.1,pypy-dev DIST=precise TRAVIS_LANG=python
       dist: precise
       language: python
 
