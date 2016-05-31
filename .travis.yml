@@ -14,22 +14,17 @@ matrix:
   include:
     # Stackless
 
-    - env: TESTENV=2.7.11,stackless-dev DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=stackless-dev DIST=precise TRAVIS_LANG=python
       dist: precise
       language: python
 
-    - env: TESTENV=2.7.11,stackless-dev DIST=precise TRAVIS_LANG=generic
+    - env: TESTENV=stackless-dev DIST=precise TRAVIS_LANG=generic
       dist: precise
       language: generic
-
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python
-      dist: precise
-      language: python
 
     - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
       dist: precise
       language: generic
-
 
 install:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
