@@ -14,19 +14,19 @@ matrix:
   include:
     # Stackless
 
-    - env: TESTENV=3.4-dev DIST=precise
+    - env: TESTENV=2.7.11,stackless-dev DIST=precise TRAVIS_LANG=python
       dist: precise
       language: python
 
-    - env: TESTENV=stackless-dev DIST=precise
+    - env: TESTENV=2.7.11,stackless-dev DIST=precise TRAVIS_LANG=generic
       dist: precise
       language: generic
 
-    - env: TESTENV=stackless-3.4.1 DIST=precise
+    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python
       dist: precise
       language: python
 
-    - env: TESTENV=stackless-3.4.1 DIST=precise
+    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
       dist: precise
       language: generic
 
@@ -43,15 +43,15 @@ script:
   - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
-    if [[ "$TESTENV" != '' ]]; then
-      ./bin/pyenv install "$TESTENV"
-      if [[ -x ./versions/$TESTENV/bin/python ]]; then
-        virtualenv --python=./versions/$TESTENV/bin/python "$VIRTUAL_ENV_BASE/$TESTENV"
+    for PYENV_VERSION in ${TESTENV//,/ }; do
+      ./bin/pyenv install "$PYENV_VERSION"
+      if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
+        virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
       fi
-      if [[ -f "$VIRTUAL_ENV_BASE/$TESTENV/bin/activate" ]]; then
-        source "$VIRTUAL_ENV_BASE/$TESTENV/bin/activate"
+      if [[ -f "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate" ]]; then
+        source "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate"
         python --version
       else
-        false
+        exit 1
       fi
-    fi
+    done
