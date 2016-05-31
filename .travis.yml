@@ -14,13 +14,14 @@ matrix:
   include:
     # Stackless
 
-    - env: TESTENV=pypy-5.1.1,pypy-dev DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=pypy-5.1.1,pypy-dev DIST=precise TRAVIS_LANG=python PYENV_RPYTHON_VERSION=pypy-5.1.1
       dist: precise
       language: python
 
-    - env: TESTENV=2.7.11,pypy-dev DIST=precise TRAVIS_LANG=generic
-      dist: precise
-      language: generic
+    # dies after 10 mins of no activity
+    # env: TESTENV=2.7.11,pypy-dev DIST=precise TRAVIS_LANG=generic
+    #  dist: precise
+    #  language: generic
 
 install:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
