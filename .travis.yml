@@ -14,10 +14,19 @@ matrix:
   include:
     # Stackless
 
+    - env: TESTENV=3.4-dev DIST=precise
+      dist: precise
+      language: python
+
+    - env: TESTENV=stackless-dev DIST=precise
+      dist: precise
+      language: generic
+
     - env: TESTENV=stackless-3.4.1 DIST=precise
       dist: precise
       language: python
-    - env: TESTENV=stackless-dev DIST=precise
+
+    - env: TESTENV=stackless-3.4.1 DIST=precise
       dist: precise
       language: generic
 
