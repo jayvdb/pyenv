@@ -12,12 +12,6 @@ env:
 
 matrix:
   include:
-    # Plain bats
-    - env: PYENV_NATIVE_EXT=
-      addons: false
-    - env: PYENV_NATIVE_EXT=1
-      addons: false
-
     # Stackless
 
     - env: TESTENV=stackless-3.4.1 DIST=precise
@@ -27,11 +21,6 @@ matrix:
       dist: precise
       language: generic
 
-    # Stackless
-
-    - env: TESTENV=stackless-dev DIST=precise
-      dist: precise
-      language: python
 
 install:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
