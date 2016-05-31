@@ -40,7 +40,7 @@ install:
     fi
 
 script:
-  - make test
+  - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
     if [[ "$TESTENV" != '' ]]; then
