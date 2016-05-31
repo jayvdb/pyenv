@@ -36,7 +36,7 @@ script:
   - |
     export PYENV_ROOT=.
     for PYENV_VERSION in ${TESTENV//,/ }; do
-      ./bin/pyenv install "$PYENV_VERSION"
+      ./bin/pyenv install --verbose "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
         virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
       fi
