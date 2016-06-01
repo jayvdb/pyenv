@@ -19,7 +19,7 @@ addons:
 env:
   global:
     - VIRTUAL_ENV_BASE=~/virtualenv
-    - VIRTUAL_ENV_VERSION_SPEC='<10'
+    - VIRTUAL_ENV_VERSION_SPEC='<13'
 
 matrix:
   include:
@@ -29,55 +29,47 @@ matrix:
     - env: PYENV_NATIVE_EXT=1
       addons: false
 
+    # Jython
+    - env: TESTENV=jython-2.7.0,jython-dev VIRTUAL_ENV_VERSION_SPEC='<13'
+      dist: precise
+      language: generic
+
+    - env: TESTENV=jython-2.7.0,jython-dev VIRTUAL_ENV_VERSION_SPEC='<12'
+      dist: precise
+      language: generic
+
+    - env: TESTENV=jython-dev VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2'
+      dist: precise
+      language: generic
+
     # CPython
-    - env: TESTENV=2.7.11 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<12.1'
+    - env: TESTENV=2.7.11,3.2.6,3.4.4
       dist: precise
-
-    - env: TESTENV=3.2.6 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: precise
-
-#      addons:
-#        apt:
-#          packages:
-#            - zlib1g-dev
 
     # PyPy
-    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
+    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest
       dist: precise
 
     # Anaconda/Miniconda
 
-    - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
+    - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
     # Stackless
 
-    - env: TESTENV=stackless-3.4.1,stackless-dev DIST=precise
+    - env: TESTENV=stackless-3.4.1,stackless-dev
       dist: precise
-
-    # Jython
-    - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: precise
-      language: generic
-
-    # Jython
-    - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='<12'
-      dist: precise
-      language: generic
-
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2'
-      dist: trusty
-      language: generic
 
 # Failures (must all be replicated into the allow_failures section)
 
-    # CPython
-    - env: TESTENV=3.4.4 DIST=precise
+    # Miniconda 2
+
+    - env: TESTENV=miniconda2-4.0.5
       dist: precise
 
     # IronPython
 
-    - env: TESTENV=ironpython-2.7.5 DIST=precise
+    - env: TESTENV=ironpython-2.7.5
       dist: precise
       sudo: required
       addons:
@@ -88,7 +80,7 @@ matrix:
             - mono-xbuild
             - mono-dmcs
             - mono-complete
-    - env: TESTENV=ironpython-dev DIST=precise
+    - env: TESTENV=ironpython-dev
       dist: precise
       sudo: required
       addons:
@@ -99,94 +91,18 @@ matrix:
             - mono-xbuild
             - mono-dmcs
             - mono-complete
-
-    # Jython
-
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic  VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: trusty
-      language: generic
-
-    - env: TESTENV=jython-2.7.0 DIST=precise TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: precise
-      language: python
-    - env: TESTENV=jython-dev DIST=precise TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: precise
-      language: python
-    - env: TESTENV=jython-2.7.0 DIST=trusty TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: trusty
-      language: python
-
-    # Miniconda 2
-
-    - env: TESTENV=miniconda2-4.0.5 DIST=precise
-      dist: precise
-
-    # Stackless
-
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
-      dist: precise
-      language: generic
-
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python VIRTUAL_ENV_VERSION_SPEC='<12.1' SHOULD_FAIL=1
-      dist: precise
-      language: python
-
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2' SHOULD_PASS=1
-      dist: precise
-      language: python
-
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2' SHOULD_PASS=1
-      dist: precise
-      language: generic
-
-  # Check these periodically
-  excluded_successful:
-    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=trusty
-      dist: trusty
-
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=python
-      dist: trusty
-      language: python
-
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic
-      dist: trusty
-      language: generic
 
   excluded_failures:
-    # Same problem as 3.4.4
-    - env: TESTENV=3.5.1 DIST=precise
-      dist: precise
-
     # Dies after 35+ mins with targetpypystandalone.py killed
-    - env: TESTENV=pypy-5.1.1,pypy-dev DIST=precise PYENV_RPYTHON_VERSION=pypy-5.1.1
-      dist: precise
-      language: python
-
-    # ironpython-dev on trusty has build problems
-    - env: TESTENV=ironpython-dev DIST=trusty
-      dist: trusty
-      sudo: required
-      addons:
-        apt:
-          packages:
-            - python-virtualenv
-            - python-pip
-            - mono-xbuild
-            - mono-dmcs
-            - mono-complete
-
-    # trusty has same problem as precise; _io.so: undefined symbol: _PyCodec_LookupTextEncoding
-    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
-      dist: trusty
-
-    - env: TESTENV=miniconda-latest DIST=precise
+    - env: TESTENV=pypy-5.1.1,pypy-dev PYENV_RPYTHON_VERSION=pypy-5.1.1
       dist: precise
 
   allow_failures:
-    - env: TESTENV=3.4.4 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<13'
+    # _io.so: undefined symbol: _PyCodec_LookupTextEncoding
+    - env: TESTENV=miniconda2-4.0.5
       dist: precise
 
-    - env: TESTENV=ironpython-2.7.5 DIST=precise
+    - env: TESTENV=ironpython-2.7.5
       dist: precise
       sudo: required
       addons:
@@ -197,7 +113,7 @@ matrix:
             - mono-xbuild
             - mono-dmcs
             - mono-complete
-    - env: TESTENV=ironpython-dev DIST=precise
+    - env: TESTENV=ironpython-dev
       dist: precise
       sudo: required
       addons:
@@ -208,22 +124,6 @@ matrix:
             - mono-xbuild
             - mono-dmcs
             - mono-complete
-
-    - env: TESTENV=jython-2.7.0 DIST=precise TRAVIS_LANG=python
-      dist: precise
-      language: python
-    - env: TESTENV=jython-dev DIST=precise TRAVIS_LANG=python
-      dist: precise
-      language: python
-    - env: TESTENV=jython-2.7.0 DIST=trusty TRAVIS_LANG=python
-      dist: trusty
-      language: python
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=python
-      dist: trusty
-      language: python
-
-    - env: TESTENV=miniconda2-4.0.5 DIST=precise
-      dist: precise
 
 before_install:
   - virtualenv --version || true
