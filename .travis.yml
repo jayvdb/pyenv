@@ -7,11 +7,13 @@ addons:
     # source `debian-sid`, as pulls in many other debian-sid packages
     # which conflicts with the Ubuntu packages.
     packages:
+      - python-virtualenv
       - python-pip
 
 env:
   global:
     - VIRTUAL_ENV_BASE=~/virtualenv
+    - VIRTUAL_ENV_VERSION_SPEC='<14'
 
 matrix:
   include:
@@ -22,10 +24,10 @@ matrix:
       addons: false
 
     # CPython
-    - env: TESTENV=2.7.11 DIST=precise
+    - env: TESTENV=2.7.11 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<12.1'
       dist: precise
 
-    - env: TESTENV=3.2.6 DIST=precise
+    - env: TESTENV=3.2.6 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: precise
 
 #      addons:
@@ -37,17 +39,10 @@ matrix:
     - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
       dist: precise
 
-    # Anaconda
+    # Anaconda/Miniconda
 
-    - env: TESTENV=anaconda3-4.0.0 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
+    - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
-
-    # Miniconda
-
-    - env: TESTENV=miniconda3-4.0.5 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
-      dist: precise
-    - env: TESTENV=miniconda3-4.0.5 DIST=trusty VIRTUAL_ENV_ADD_LIB_PATH=1
-      dist: trusty
 
     # Stackless
 
@@ -159,7 +154,7 @@ matrix:
       dist: precise
 
   allow_failures:
-    - env: TESTENV=3.4.4 DIST=precise
+    - env: TESTENV=3.4.4 DIST=precise VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: precise
 
     - env: TESTENV=ironpython-2.7.5 DIST=precise
@@ -203,6 +198,14 @@ matrix:
       dist: precise
       language: generic
 
+before_install:
+  - virtualenv --version
+  - if [[ "$VIRTUAL_ENV" == '' ]]; then
+      export PIP_USER_FLAG=--user ;
+    else
+      export PIP_USER_FLAG= ;
+    fi
+
 install:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
   - |
@@ -215,7 +218,7 @@ script:
   - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
-    pip install --user --upgrade 'virtualenv<14'
+    pip install $PIP_USER_FLAG --upgrade 'virtualenv'"$VIRTUAL_ENV_VERSION_SPEC"
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
@@ -230,6 +233,7 @@ script:
       if [[ -f "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate" ]]; then
         source "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate"
         python --version
+        pip --version
       else
         exit 1
       fi
