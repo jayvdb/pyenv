@@ -56,8 +56,17 @@ matrix:
       dist: precise
 
     # Jython
-    - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic
+    - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: precise
+      language: generic
+
+    # Jython
+    - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='<12'
+      dist: precise
+      language: generic
+
+    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2'
+      dist: trusty
       language: generic
 
 # Failures (must all be replicated into the allow_failures section)
@@ -93,17 +102,17 @@ matrix:
 
     # Jython
 
-    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic
+    - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=generic  VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: trusty
       language: generic
 
-    - env: TESTENV=jython-2.7.0 DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=jython-2.7.0 DIST=precise TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: precise
       language: python
-    - env: TESTENV=jython-dev DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=jython-dev DIST=precise TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: precise
       language: python
-    - env: TESTENV=jython-2.7.0 DIST=trusty TRAVIS_LANG=python
+    - env: TESTENV=jython-2.7.0 DIST=trusty TRAVIS_LANG=python  VIRTUAL_ENV_VERSION_SPEC='<13'
       dist: trusty
       language: python
 
@@ -237,6 +246,7 @@ script:
   - |
     export PYENV_ROOT=.
     pip install $PIP_USER_FLAG --upgrade 'virtualenv'"$VIRTUAL_ENV_VERSION_SPEC"
+    virtualenv --version
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
