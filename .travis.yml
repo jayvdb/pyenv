@@ -24,30 +24,30 @@ env:
 matrix:
   include:
     # Plain bats
+
     - env: PYENV_NATIVE_EXT=
       addons: false
     - env: PYENV_NATIVE_EXT=1
       addons: false
 
-    # Jython
-    - env: TESTENV=jython-2.7.0,jython-dev VIRTUAL_ENV_VERSION_SPEC='<13'
-      dist: precise
-      language: generic
-
-    - env: TESTENV=jython-2.7.0,jython-dev VIRTUAL_ENV_VERSION_SPEC='<12'
-      dist: precise
-      language: generic
-
-    - env: TESTENV=jython-dev VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2'
-      dist: precise
-      language: generic
-
     # CPython
+
     - env: TESTENV=2.7.11,3.2.6,3.4.4
       dist: precise
 
+    # Stackless
+
+    - env: TESTENV=stackless-3.4.1,stackless-dev
+      dist: precise
+
     # PyPy
+
     - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest
+      dist: precise
+
+    # Jython
+
+    - env: TESTENV=jython-2.7.0,jython-dev VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2'
       dist: precise
 
     # Anaconda/Miniconda
@@ -55,10 +55,6 @@ matrix:
     - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
-    # Stackless
-
-    - env: TESTENV=stackless-3.4.1,stackless-dev
-      dist: precise
 
 # Failures (must all be replicated into the allow_failures section)
 
