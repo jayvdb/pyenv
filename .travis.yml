@@ -44,11 +44,12 @@ matrix:
 
     # Miniconda
 
-    - env: TESTENV=miniconda3-4.0.5 DIST=precise LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
+    - env: TESTENV=miniconda3-4.0.5 DIST=precise
+      # VE_LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
       language: python
       python: 3.5
       dist: precise
-    - env: TESTENV=miniconda3-4.0.5 DIST=trusty LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
+    - env: TESTENV=miniconda3-4.0.5 DIST=trusty VE_LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
       language: python
       python: 3.5
       dist: trusty
@@ -224,8 +225,9 @@ script:
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
         ldd ./versions/$PYENV_VERSION/bin/python
-        ls -al /versions/$PYENV_VERSION/lib || true
-        virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
+        ./versions/$PYENV_VERSION/bin/python --version
+        ls -al ./versions/$PYENV_VERSION/lib || true
+        LD_LIBRARY_PATH="$VE_LD_LIBRARY_PATH" virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
       fi
       if [[ -f "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate" ]]; then
         source "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate"
