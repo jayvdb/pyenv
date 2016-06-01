@@ -54,7 +54,7 @@ matrix:
     - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
-    - env: TESTENV=miniconda3-4.0.5 VIRTUAL_ENV_VERSION_SPEC=''
+    - env: TESTENV=miniconda3-4.0.5 VIRTUAL_ENV_VERSION_SPEC='' VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
 # Failures (must all be replicated into the allow_failures section)
@@ -72,7 +72,6 @@ matrix:
       addons:
         apt:
           packages:
-            - python-virtualenv
             - python-pip
             - mono-xbuild
             - mono-dmcs
@@ -83,7 +82,6 @@ matrix:
       addons:
         apt:
           packages:
-            - python-virtualenv
             - python-pip
             - mono-xbuild
             - mono-dmcs
@@ -150,4 +148,5 @@ script:
       else
         exit 1
       fi
+      export LD_LIBRARY_PATH=""
     done
