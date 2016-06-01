@@ -26,10 +26,21 @@ matrix:
       dist: precise
 
     # PyPy
-    - env: TESTENV=pypy-2.4.0,pypy-5.1.1 DIST=precise
+    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
+      dist: precise
+
+    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
+      dist: trusty
+
+    # Anaconda
+
+    - env: TESTENV=anaconda-4.0.0,anaconda3-4.0.0 DIST=precise
       dist: precise
 
     # Miniconda
+
+    - env: TESTENV=miniconda-latest DIST=precise
+      dist: precise
 
     - env: TESTENV=miniconda3-4.0.5 DIST=precise LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
       language: python
