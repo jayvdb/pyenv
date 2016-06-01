@@ -25,6 +25,14 @@ matrix:
     - env: TESTENV=2.7.11 DIST=precise
       dist: precise
 
+    - env: TESTENV=3.2.6 DIST=precise
+      dist: precise
+
+#      addons:
+#        apt:
+#          packages:
+#            - zlib1g-dev
+
     # PyPy
     - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
       dist: precise
@@ -34,13 +42,10 @@ matrix:
 
     # Anaconda
 
-    - env: TESTENV=anaconda-4.0.0,anaconda3-4.0.0 DIST=precise
+    - env: TESTENV=anaconda3-4.0.0 DIST=precise
       dist: precise
 
     # Miniconda
-
-    - env: TESTENV=miniconda-latest DIST=precise
-      dist: precise
 
     - env: TESTENV=miniconda3-4.0.5 DIST=precise LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
       language: python
@@ -110,11 +115,7 @@ matrix:
     # Miniconda 2
 
     - env: TESTENV=miniconda2-4.0.5 DIST=precise
-      python: 2.7.9
       dist: precise
-    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
-      python: 2.7.9
-      dist: trusty
 
     # Stackless
 
@@ -157,6 +158,13 @@ matrix:
             - mono-dmcs
             - mono-complete
 
+    # trusty has same problem as precise; _io.so: undefined symbol: _PyCodec_LookupTextEncoding
+    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
+      dist: trusty
+
+    - env: TESTENV=miniconda-latest DIST=precise
+      dist: precise
+
   allow_failures:
     - env: TESTENV=3.4.4 DIST=precise
       dist: precise
@@ -196,11 +204,7 @@ matrix:
       language: python
 
     - env: TESTENV=miniconda2-4.0.5 DIST=precise
-      python: 2.7.9
       dist: precise
-    - env: TESTENV=miniconda2-4.0.5 DIST=trusty
-      python: 2.7.9
-      dist: trusty
 
     - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
       dist: precise
@@ -218,7 +222,7 @@ script:
   - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
-    pip install --user --upgrade virtualenv
+    pip install --user --upgrade 'virtualenv<14'
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
