@@ -39,19 +39,14 @@ matrix:
 
     # Anaconda
 
-    - env: TESTENV=anaconda3-4.0.0 DIST=precise
+    - env: TESTENV=anaconda3-4.0.0 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
     # Miniconda
 
-    - env: TESTENV=miniconda3-4.0.5 DIST=precise
-      # VE_LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
-      language: python
-      python: 3.5
+    - env: TESTENV=miniconda3-4.0.5 DIST=precise VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
-    - env: TESTENV=miniconda3-4.0.5 DIST=trusty VE_LD_LIBRARY_PATH=/opt/python/3.5.0/lib/
-      language: python
-      python: 3.5
+    - env: TESTENV=miniconda3-4.0.5 DIST=trusty VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: trusty
 
     # Stackless
@@ -227,7 +222,10 @@ script:
         ldd ./versions/$PYENV_VERSION/bin/python
         ./versions/$PYENV_VERSION/bin/python --version
         ls -al ./versions/$PYENV_VERSION/lib || true
-        LD_LIBRARY_PATH="$VE_LD_LIBRARY_PATH" virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
+        if [[ "$VIRTUAL_ENV_ADD_LIB_PATH" == '1' ]]; then
+          export LD_LIBRARY_PATH="./versions/$PYENV_VERSION/lib/"
+        fi
+        virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
       fi
       if [[ -f "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate" ]]; then
         source "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate"
