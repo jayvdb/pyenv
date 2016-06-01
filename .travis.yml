@@ -1,6 +1,12 @@
 sudo: false
 language: c
 
+# virtualenv versions:
+# precise: 1.7.1.2
+# trusty: 1.11.4
+# precise: 12.0.6
+# trusty: 13.1.0
+
 addons:
   apt:
     # Note that it is not possible to include `virtualenv` from
@@ -13,7 +19,7 @@ addons:
 env:
   global:
     - VIRTUAL_ENV_BASE=~/virtualenv
-    - VIRTUAL_ENV_VERSION_SPEC='<14'
+    - VIRTUAL_ENV_VERSION_SPEC='<10'
 
 matrix:
   include:
@@ -46,9 +52,8 @@ matrix:
 
     # Stackless
 
-    - env: TESTENV=stackless-3.4.1,stackless-dev DIST=precise TRAVIS_LANG=python
+    - env: TESTENV=stackless-3.4.1,stackless-dev DIST=precise
       dist: precise
-      language: python
 
     # Jython
     - env: TESTENV=jython-2.7.0,jython-dev DIST=precise TRAVIS_LANG=generic
@@ -70,6 +75,7 @@ matrix:
         apt:
           packages:
             - python-virtualenv
+            - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
@@ -80,6 +86,7 @@ matrix:
         apt:
           packages:
             - python-virtualenv
+            - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
@@ -108,6 +115,18 @@ matrix:
     # Stackless
 
     - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
+      dist: precise
+      language: generic
+
+    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python VIRTUAL_ENV_VERSION_SPEC='<12.1' SHOULD_FAIL=1
+      dist: precise
+      language: python
+
+    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=python VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2' SHOULD_PASS=1
+      dist: precise
+      language: python
+
+    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic VIRTUAL_ENV_VERSION_SPEC='==1.7.1.2' SHOULD_PASS=1
       dist: precise
       language: generic
 
@@ -142,6 +161,7 @@ matrix:
         apt:
           packages:
             - python-virtualenv
+            - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
@@ -164,6 +184,7 @@ matrix:
         apt:
           packages:
             - python-virtualenv
+            - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
@@ -174,6 +195,7 @@ matrix:
         apt:
           packages:
             - python-virtualenv
+            - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
@@ -194,12 +216,8 @@ matrix:
     - env: TESTENV=miniconda2-4.0.5 DIST=precise
       dist: precise
 
-    - env: TESTENV=stackless-3.4.1 DIST=precise TRAVIS_LANG=generic
-      dist: precise
-      language: generic
-
 before_install:
-  - virtualenv --version
+  - virtualenv --version || true
   - if [[ "$VIRTUAL_ENV" == '' ]]; then
       export PIP_USER_FLAG=--user ;
     else
