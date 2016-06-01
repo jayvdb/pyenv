@@ -3,8 +3,11 @@ language: c
 
 addons:
   apt:
+    # Note that it is not possible to include `virtualenv` from
+    # source `debian-sid`, as pulls in many other debian-sid packages
+    # which conflicts with the Ubuntu packages.
     packages:
-      - python-virtualenv
+      - python-pip
 
 env:
   global:
@@ -204,6 +207,7 @@ script:
   - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
+    pip install --user virtualenv
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
