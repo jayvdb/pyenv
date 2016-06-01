@@ -37,9 +37,6 @@ matrix:
     - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
       dist: precise
 
-    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=precise
-      dist: trusty
-
     # Anaconda
 
     - env: TESTENV=anaconda3-4.0.0 DIST=precise
@@ -125,7 +122,7 @@ matrix:
 
   # Check these periodically
   excluded_successful:
-    - env: TESTENV=pypy-5.1.1 DIST=trusty
+    - env: TESTENV=pypy-2.4.0,pypy-5.1.1,pypy-c-jit-latest,pypy-c-nojit-latest DIST=trusty
       dist: trusty
 
     - env: TESTENV=jython-dev DIST=trusty TRAVIS_LANG=python
@@ -226,6 +223,8 @@ script:
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
+        ldd ./versions/$PYENV_VERSION/bin/python
+        ls -al /versions/$PYENV_VERSION/lib || true
         virtualenv --python=./versions/$PYENV_VERSION/bin/python "$VIRTUAL_ENV_BASE/$PYENV_VERSION"
       fi
       if [[ -f "$VIRTUAL_ENV_BASE/$PYENV_VERSION/bin/activate" ]]; then
