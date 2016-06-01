@@ -13,7 +13,6 @@ addons:
     # source `debian-sid`, as pulls in many other debian-sid packages
     # which conflicts with the Ubuntu packages.
     packages:
-      - python-virtualenv
       - python-pip
 
 env:
@@ -55,6 +54,8 @@ matrix:
     - env: TESTENV=anaconda3-4.0.0,miniconda3-4.0.5 VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
+    - env: TESTENV=miniconda3-4.0.5 VIRTUAL_ENV_VERSION_SPEC=''
+      dist: precise
 
 # Failures (must all be replicated into the allow_failures section)
 
@@ -104,7 +105,6 @@ matrix:
       addons:
         apt:
           packages:
-            - python-virtualenv
             - python-pip
             - mono-xbuild
             - mono-dmcs
@@ -115,19 +115,10 @@ matrix:
       addons:
         apt:
           packages:
-            - python-virtualenv
             - python-pip
             - mono-xbuild
             - mono-dmcs
             - mono-complete
-
-before_install:
-  - virtualenv --version || true
-  - if [[ "$VIRTUAL_ENV" == '' ]]; then
-      export PIP_USER_FLAG=--user ;
-    else
-      export PIP_USER_FLAG= ;
-    fi
 
 install:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
@@ -141,14 +132,12 @@ script:
   - if [[ "$TESTENV" == '' ]]; then make test; fi
   - |
     export PYENV_ROOT=.
-    pip install $PIP_USER_FLAG --upgrade 'virtualenv'"$VIRTUAL_ENV_VERSION_SPEC"
+    pip install --user --upgrade 'virtualenv'"$VIRTUAL_ENV_VERSION_SPEC"
     virtualenv --version
     for PYENV_VERSION in ${TESTENV//,/ }; do
       ./bin/pyenv install "$PYENV_VERSION"
       if [[ -x ./versions/$PYENV_VERSION/bin/python ]]; then
-        ldd ./versions/$PYENV_VERSION/bin/python
         ./versions/$PYENV_VERSION/bin/python --version
-        ls -al ./versions/$PYENV_VERSION/lib || true
         if [[ "$VIRTUAL_ENV_ADD_LIB_PATH" == '1' ]]; then
           export LD_LIBRARY_PATH="./versions/$PYENV_VERSION/lib/"
         fi
