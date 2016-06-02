@@ -21,7 +21,7 @@ env:
     - VIRTUAL_ENV_VERSION_SPEC='<13'
 
 matrix:
-  include:
+  no_include:
     # Plain bats
 
     - env: PYENV_NATIVE_EXT=
@@ -62,6 +62,8 @@ matrix:
 
     # IronPython
 
+  include:
+
     - env: TESTENV=ironpython-2.7.5
       dist: precise
       sudo: required
@@ -88,7 +90,7 @@ matrix:
     - env: TESTENV=pypy-5.1.1,pypy-dev PYENV_RPYTHON_VERSION=pypy-5.1.1
       dist: precise
 
-  allow_failures:
+  allow_failures_off:
     - env: TESTENV=ironpython-2.7.5
       dist: precise
       sudo: required
