@@ -58,7 +58,7 @@ matrix:
 
     # Miniconda 2
 
-    - env: TESTENV=miniconda2-4.0.5
+    - env: TESTENV=miniconda2-4.0.5 VIRTUAL_ENV_ADD_LIB_PATH=1
       dist: precise
 
     # IronPython
