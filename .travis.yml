@@ -1,6 +1,10 @@
 sudo: false
-install: git clone --depth 1 https://github.com/sstephenson/bats.git
-script: make test
+addons:
+  apt:
+    sources:
+      - debian-sid
+    packages:
+      - bats
 matrix:
   include:
     - language: generic
@@ -11,3 +15,11 @@ matrix:
     - language: c
       compiler: clang
       env: PYENV_NATIVE_EXT=1
+script:
+  - |
+    if [ "$PYENV_NATIVE_EXT" == '1' ]; then
+      ./src/configure
+      make -C src
+    fi
+  - bats --tap test
+  - (cd plugins/python-build && bats --tap test)
