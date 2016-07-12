@@ -7,7 +7,7 @@ addons:
       - bats
 matrix:
   include:
-    - language: generic
+    - language: bash
       env: PYENV_NATIVE_EXT=
     - language: c
       compiler: clang
