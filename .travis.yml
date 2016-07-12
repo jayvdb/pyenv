@@ -10,9 +10,6 @@ matrix:
     - language: generic
       env: PYENV_NATIVE_EXT=
     - language: c
-      compiler: gcc
-      env: PYENV_NATIVE_EXT=1
-    - language: c
       compiler: clang
       env: PYENV_NATIVE_EXT=1
 script:
